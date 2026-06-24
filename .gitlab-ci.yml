@@ -1,0 +1,41 @@
+workflow:
+  name: 'branch: $CI_COMMIT_BRANCH | Commit: $CI_COMMIT_TITLE'
+
+stages:
+  - Code-Sanity
+
+variables:
+  UV_VERSION: "0.9"
+  PYTHON_VERSION: "3.12"
+  BASE_LAYER: slim
+  UV_LINK_MODE: copy
+
+default:
+  image: python:$PYTHON_VERSION-$BASE_LAYER
+
+# ============================================== #
+# |            Always lint the code            | #
+# ============================================== #
+linter:
+  stage: Code-Sanity
+  before_script:
+    - pip install uv
+    - cd prototype
+  script:
+    - uv sync
+    - uv run ruff check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+type-checker:
+  stage: Code-Sanity
+  before_script:
+    - pip install uv
+    - cd prototype
+  script:
+    - uv sync
+    - uv run ty check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
