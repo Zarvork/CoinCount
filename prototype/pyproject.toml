@@ -1,0 +1,19 @@
+[project]
+name = "prototype"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.0",
+    "numpy>=2.5.0",
+    "opencv-python>=4.13.0.92",
+    "pandas>=3.0.3",
+    "pillow>=12.2.0",
+    "scikit-image>=0.26.0",
+    "scikit-learn>=1.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.19",
+    "ty>=0.0.53",
+]
