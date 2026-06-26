@@ -1,37 +1,12 @@
-import os
-
 import cv2
-import kagglehub
 import numpy as np
+from dataset_handler import load_dataset
 
 
 def show_image(img, title):
     cv2.imshow(title, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-
-def load_dataset():
-    # Download and Load dataset
-
-    dataset_path = kagglehub.dataset_download("janstaffa/euro-coins-dataset")
-
-    print("Dataset downloaded in: ", dataset_path)
-
-    image_dir_path = os.path.join(dataset_path, "images")
-
-    filenames = sorted(os.listdir(image_dir_path))
-
-    images = []
-
-    for filename in filenames:
-        img_path = os.path.join(image_dir_path, filename)
-
-        images.append(cv2.imread(img_path))
-
-    print(f"Number of images : {len(images)} images.")
-
-    return images
 
 
 def preprocess(image, gaussian_kernel_size):
@@ -93,14 +68,14 @@ def draw_results(image, circles):
 
 if __name__ == "__main__":
     # Load dataset
-    images = load_dataset()
+    dataset = load_dataset()
 
     no_detection = 0
-    for ii, image in enumerate(images):
+    for filename, image, labels in dataset:
         # Coin Detection
         circles = detect_circles(image)
         if circles is not None:
-            cv2.imwrite(f"output/{ii + 1}.jpg", draw_results(image, circles))
+            cv2.imwrite(f"output/{filename}", draw_results(image, circles))
         else:
             no_detection += 1
-    print(f"Images without detection: {no_detection}/{len(images)}")
+    print(f"Images without detection: {no_detection}/{len(dataset)}")
