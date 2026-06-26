@@ -2,6 +2,7 @@ import os
 
 import cv2
 import kagglehub
+import numpy as np
 import pandas as pd
 
 # Dict to map dataset classes with euros values
@@ -46,7 +47,9 @@ def load_labels(label_path: str, width: int, height: int) -> pd.DataFrame:
     return labels_df[["class_id", "x1", "y1", "x2", "y2"]]
 
 
-def load_dataset() -> list:
+def load_dataset() -> list[
+    tuple[str, np.ndarray, list[tuple[int, int, int, int, int]]]
+]:
     """Load the dataset into a list of tuples
 
     Returns:
