@@ -18,6 +18,6 @@ add_executable(coincount
     benchmark/benchmark.cc
 )
 
-add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
+add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast -O2)
 
 target_link_libraries(coincount ${OpenCV_LIBS})
