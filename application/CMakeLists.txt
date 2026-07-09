@@ -13,6 +13,7 @@ add_executable(coincount
     recognition/feature_extraction.cc
     recognition/feature_extraction.hh
     utils/utils.cc
+    detection/coin_detection.cc
 )
 
 add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
