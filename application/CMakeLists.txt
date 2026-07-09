@@ -12,6 +12,7 @@ add_executable(coincount
     dataset/dataset_handler.cc
     recognition/feature_extraction.cc
     recognition/feature_extraction.hh
+    utils/utils.cc
 )
 
 add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
