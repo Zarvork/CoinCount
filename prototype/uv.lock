@@ -666,6 +666,7 @@ name = "prototype"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "joblib" },
     { name = "kagglehub" },
     { name = "matplotlib" },
     { name = "numpy" },
@@ -684,6 +685,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "joblib", specifier = ">=1.5.3" },
     { name = "kagglehub", specifier = ">=1.0.2" },
     { name = "matplotlib", specifier = ">=3.11.0" },
     { name = "numpy", specifier = ">=2.5.0" },
