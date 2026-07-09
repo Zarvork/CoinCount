@@ -9,15 +9,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(coincount
     main.cc
+    dataset/dataset_handler.cc
 )
-
-# when they will be created, add files to the executable like 
-#add_executable(coincount
-#    main.cc
-#    recognition/...
-#    benchmark/...
-#    detection/...
-#    dataset/...
-#)
 
 target_link_libraries(coincount ${OpenCV_LIBS})
