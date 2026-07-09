@@ -10,6 +10,10 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 add_executable(coincount
     main.cc
     dataset/dataset_handler.cc
+    recognition/feature_extraction.cc
+    recognition/feature_extraction.hh
 )
+
+add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
 
 target_link_libraries(coincount ${OpenCV_LIBS})
