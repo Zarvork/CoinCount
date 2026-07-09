@@ -1,11 +1,16 @@
 #include <iostream>
-#include <opencv2/opencv.hpp>
-#include "detection/coin_detection.hh"
+#include <string>
 
-int main() {
-    std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-    cv::Mat image = cv::imread("001.jpg");
-    cv::Mat circles = detect_circles(image);
-    std::cout << circles << std::endl;
+#include "benchmark/benchmark.hh"
+
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <dataset_path>" << std::endl;
+        return 1;
+    }
+    std::string dataset_path = argv[1];
+
+    compute_metrics(dataset_path, true);
+
     return 0;
 }

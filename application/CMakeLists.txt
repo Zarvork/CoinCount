@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(coincount CXX)
+project(coin_detection LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -14,6 +15,7 @@ add_executable(coincount
     recognition/feature_extraction.hh
     utils/utils.cc
     detection/coin_detection.cc
+    benchmark/benchmark.cc
 )
 
 add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
