@@ -6,6 +6,8 @@
 
 #include "benchmark/benchmark.hh"
 #include "detection/coin_detection.hh"
+#include "recognition/coin_recognition.hh"
+#include "recognition/build_training_set.hh"
 #include "utils/utils.hh"
 
 // Print help message
@@ -81,6 +83,22 @@ int main(int argc, char** argv) {
             std::cerr << "Error: could not load image " << image_path << std::endl;
             return 1;
         }
+
+        TrainingSet ts = build_training_set(true, dataset_path);
+        if (ts.X.rows == 0) {
+            std::cerr << "Error: no training samples generated from " << dataset_path << std::endl;
+            return 1;
+        }
+        CoinClassifier clf = train_classifier(ts.X, ts.y);
+
+        RecognitionResult result = recognize_coins(image, clf);
+
+        std::cout << "Detected Coins : " << result.predictedClasses.size() << std::endl;
+        std::cout << "Total Value : " << std::fixed << std::setprecision(2)
+                << result.totalValue << "E" << std::endl;
+
+        cv::imwrite("result_recognize.jpg", result.annotatedImage);
+        show_image(result.annotatedImage, "Reconnaissance");
 
         return 0;
     }
