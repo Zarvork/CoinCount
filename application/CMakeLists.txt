@@ -32,6 +32,8 @@ if(BUILD_TESTING)
     add_executable(unit_tests
         tests/test_utils.cc
         tests/test_dataset_handler.cc
+        tests/test_feature_extraction.cc
+        tests/test_build_training_set.cc
     )
     target_link_libraries(unit_tests PRIVATE
         coincount_lib

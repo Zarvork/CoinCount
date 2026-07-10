@@ -38,3 +38,7 @@ std::vector<float> extract_hog_features(const cv::Mat& crop);
 std::vector<float> extract_features(const cv::Mat& image, double cx, double cy, double r);
 
 std::pair<cv::Mat, std::vector<int>> extract_features_batch(const cv::Mat& image, const std::vector<cv::Vec3f>& circles);
+
+cv::Mat bgr_to_gray(const cv::Mat& image);
+
+double bilinear_interpolate(const cv::Mat& gray, double row, double col);

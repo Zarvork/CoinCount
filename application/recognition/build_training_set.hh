@@ -42,3 +42,5 @@ std::vector<Match> match_circles_to_labels(
     const std::vector<cv::Vec3f>& circles);
 
 TrainingSet build_training_set(bool augment = true, std::string dataset_path = "");
+
+cv::Mat augment_image(const cv::Mat& image, double angle);
