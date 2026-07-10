@@ -4,6 +4,7 @@ workflow:
 stages:
   - Code-Sanity
   - Build
+  - Test
 
 variables:
   UV_VERSION: "0.9"
@@ -14,9 +15,6 @@ variables:
 default:
   image: python:$PYTHON_VERSION-$BASE_LAYER
 
-# ============================================== #
-# |            Always lint the code            | #
-# ============================================== #
 linter:
   stage: Code-Sanity
   before_script:
@@ -41,9 +39,6 @@ type-checker:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-# ============================================== #
-# |            Check Build for cpp             | #
-# ============================================== #
 cpp-build:
   stage: Build
   image: ubuntu:24.04
@@ -57,6 +52,26 @@ cpp-build:
     - cd application         
     - cmake -B build -S .
     - cmake --build build --parallel $(nproc)
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+
+cpp-test:
+  stage: Test
+  image: ubuntu:24.04
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq
+        build-essential
+        cmake
+        libopencv-dev
+        libgtest-dev
+  script:
+    - cd application
+    - cmake -B build -S . -DBUILD_TESTING=ON
+    - cmake --build build --parallel $(nproc)
+    - cd build && ctest --output-on-failure
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
