@@ -7,9 +7,9 @@
 cv::Mat extract_coin_crop(const cv::Mat& image, float cx, float cy, float r) {
     int h = image.rows;
     int w = image.cols;
-    int icx = (int)(cx);
-    int icy = (int)(cy);
-    int ir = (int)(r);
+    int icx = static_cast<int>(cx);
+    int icy = static_cast<int>(cy);
+    int ir = static_cast<int>(r);
 
     int x1 = std::max(icx - ir, 0);
     int y1 = std::max(icy - ir, 0);
@@ -37,10 +37,10 @@ cv::Mat extract_coin_mask(int size) {
 
 std::vector<float> extract_size_feature(double r, int imageH, int imageW) {
     if (imageH > 0 && imageW > 0) {
-        float diagonal = std::sqrt((float)(imageH * imageH + imageW * imageW));
-        return { (float)(r / diagonal) };
+        float diagonal = std::sqrt(static_cast<float>(imageH * imageH + imageW * imageW));
+        return { static_cast<float>(r / diagonal) };
     }
-    return { (float)(2.0 * r) };
+    return { static_cast<float>(2.0 * r) };
 }
 
 std::vector<float> extract_color_features(const cv::Mat& crop, const cv::Mat& mask) {
@@ -66,9 +66,9 @@ std::vector<float> extract_color_features(const cv::Mat& crop, const cv::Mat& ma
     channel1.reserve(pixels.size());
     channel2.reserve(pixels.size());
     for (const auto& px : pixels) {
-        channel0.push_back((float)(px[0]));
-        channel1.push_back((float)(px[1]));
-        channel2.push_back((float)(px[2]));
+        channel0.push_back(static_cast<float>(px[0]));
+        channel1.push_back(static_cast<float>(px[1]));
+        channel2.push_back(static_cast<float>(px[2]));
     }
 
     auto mean_std = std::vector<float>(6);
@@ -99,16 +99,16 @@ std::vector<float> extract_color_features(const cv::Mat& crop, const cv::Mat& ma
         std::vector<float> hist(HSV_N_BINS, 0.0f);
         int lo = ranges[ch].first;
         int hi = ranges[ch].second;
-        float bin_width = (float)(hi - lo) / HSV_N_BINS;
+        float bin_width = static_cast<float>(hi - lo) / HSV_N_BINS;
 
         for (float val : (ch == 0 ? channel0 : (ch == 1 ? channel1 : channel2))) {
-            int bin_idx = (int)((val - lo) / bin_width);
+            int bin_idx = static_cast<int>((val - lo) / bin_width);
             if (bin_idx < 0) bin_idx = 0;
             if (bin_idx >= HSV_N_BINS) bin_idx = HSV_N_BINS - 1;
             hist[bin_idx] += 1.0f;
         }
 
-        float total = (float)(pixels.size());
+        float total = static_cast<float>(pixels.size());
         if (total > 0) {
             for (auto& h : hist) {
                 h /= total;
@@ -146,12 +146,12 @@ double get_pixel_const_zero(const cv::Mat& gray, int row, int col) {
     if (row < 0 || row >= gray.rows || col < 0 || col >= gray.cols) {
         return 0.0;
     }
-    return (double)(gray.at<uchar>(row, col));
+    return static_cast<double>(gray.at<uchar>(row, col));
 }
 
 double bilinear_interpolate(const cv::Mat& gray, double row, double col) {
-    int r0 = (int)(std::floor(row));
-    int c0 = (int)(std::floor(col));
+    int r0 = static_cast<int>(std::floor(row));
+    int c0 = static_cast<int>(std::floor(col));
     int r1 = r0 + 1;
     int c1 = c0 + 1;
 
@@ -183,7 +183,7 @@ cv::Mat compute_uniform_lbp(const cv::Mat& gray, int nPoints, int radius) {
 
     for (int r = 0; r < gray.rows; ++r) {
         for (int c = 0; c < gray.cols; ++c) {
-            double center = (double)(gray.at<uchar>(r, c));
+            double center = static_cast<double>(gray.at<uchar>(r, c));
 
             for (int i = 0; i < nPoints; ++i) {
                 double sample = bilinear_interpolate(gray, r + dRow[i], c + dCol[i]);
@@ -200,9 +200,9 @@ cv::Mat compute_uniform_lbp(const cv::Mat& gray, int nPoints, int radius) {
             if (transitions <= 2) {
                 int sumBits = 0;
                 for (int b : bits) sumBits += b;
-                value = (float)(sumBits);
+                value = static_cast<float>(sumBits);
             } else {
-                value = (float)(nPoints + 1);
+                value = static_cast<float>(nPoints + 1);
             }
 
             lbp.at<float>(r, c) = value;
@@ -232,7 +232,7 @@ std::vector<float> extract_lbp_features(const cv::Mat& crop, const cv::Mat& mask
             const uchar* mrow = mask.ptr<uchar>(y);
             for (int x = 0; x < lbp.cols; ++x) {
                 if (mrow[x] > 0) {
-                    int bin = (int)(lrow[x]);
+                    int bin = static_cast<int>(lrow[x]);
                     bin = std::clamp(bin, 0, nBins - 1);
                     hist[bin] += 1.0;
                     ++n;
@@ -241,8 +241,8 @@ std::vector<float> extract_lbp_features(const cv::Mat& crop, const cv::Mat& mask
         }
 
         for (int b = 0; b < nBins; ++b) {
-            double density = (n > 0) ? hist[b] / (double)(n) : 0.0; // binWidth = 1
-            features.push_back((float)(density));
+            double density = (n > 0) ? hist[b] / static_cast<double>(n) : 0.0; // binWidth = 1
+            features.push_back(static_cast<float>(density));
         }
     }
 
@@ -257,15 +257,15 @@ void compute_gradients(const cv::Mat& gray, cv::Mat& gRow, cv::Mat& gCol) {
     for (int y = 1; y < rows - 1; ++y) {
         for (int x = 0; x < cols; ++x) {
             gRow.at<double>(y, x) =
-                (double)(gray.at<uchar>(y + 1, x)) -
-                (double)(gray.at<uchar>(y - 1, x));
+                static_cast<double>(gray.at<uchar>(y + 1, x)) -
+                static_cast<double>(gray.at<uchar>(y - 1, x));
         }
     }
     for (int y = 0; y < rows; ++y) {
         for (int x = 1; x < cols - 1; ++x) {
             gCol.at<double>(y, x) =
-                (double)(gray.at<uchar>(y, x + 1)) -
-                (double)(gray.at<uchar>(y, x - 1));
+                static_cast<double>(gray.at<uchar>(y, x + 1)) -
+                static_cast<double>(gray.at<uchar>(y, x - 1));
         }
     }
 }
@@ -298,14 +298,14 @@ std::vector<std::vector<std::vector<double>>> compute_cell_histograms(
             orientation = std::fmod(orientation, 180.0);
             if (orientation < 0) orientation += 180.0;
 
-            int bin = (int)(orientation / step);
+            int bin = static_cast<int>(orientation / step);
             bin = std::clamp(bin, 0, orientations - 1);
 
             hist[ci][cj][bin] += magnitude;
         }
     }
 
-    double norm = (double)(cellRows * cellCols);
+    double norm = static_cast<double>(cellRows * cellCols);
     for (auto& row : hist)
         for (auto& cell : row)
             for (double& v : cell)
@@ -363,7 +363,7 @@ std::vector<float> extract_hog_features(const cv::Mat& crop) {
             normalize_block_l2hys(block);
 
             for (double v : block)
-                features.push_back((float)(v));
+                features.push_back(static_cast<float>(v));
         }
     }
 
@@ -405,7 +405,7 @@ std::pair<cv::Mat, std::vector<int>> extract_features_batch(
         auto feat = extract_features(image, cx, cy, r);
         if (!feat.empty()) {
             featuresList.push_back(std::move(feat));
-            validIndices.push_back((int)(idx));
+            validIndices.push_back(static_cast<int>(idx));
         }
     }
 
@@ -413,7 +413,7 @@ std::pair<cv::Mat, std::vector<int>> extract_features_batch(
         return { cv::Mat(0, N_FEATURES, CV_32F), {} };
     }
 
-    cv::Mat X((int)(featuresList.size()), N_FEATURES, CV_32F);
+    cv::Mat X(static_cast<int>(featuresList.size()), N_FEATURES, CV_32F);
     for (int i = 0; i < X.rows; ++i)
         for (int j = 0; j < N_FEATURES; ++j)
             X.at<float>(i, j) = featuresList[i][j];

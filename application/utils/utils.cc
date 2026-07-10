@@ -109,9 +109,9 @@ cv::Mat draw_matches(
 
     std::vector<Match> matches = match_circles_to_labels(labels, circles);
     for (const auto& m : matches) {
-        int cx = (int)(m.cx);
-        int cy = (int)(m.cy);
-        int r  = (int)(m.r);
+        int cx = static_cast<int>(m.cx);
+        int cy = static_cast<int>(m.cy);
+        int r  = static_cast<int>(m.r);
 
         float value = CLASS_VALUES.at(m.class_id);
 

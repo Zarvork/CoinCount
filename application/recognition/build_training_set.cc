@@ -14,8 +14,8 @@ std::vector<Match> match_circles_to_labels(
     std::vector<BoundingBox> gt_boxes;
     gt_boxes.reserve(labels.size());
     for (const auto& lbl : labels) {
-        gt_boxes.push_back({(float)(lbl.x1), (float)(lbl.y1),
-                              (float)(lbl.x2), (float)(lbl.y2)});
+        gt_boxes.push_back({static_cast<float>(lbl.x1), static_cast<float>(lbl.y1),
+                              static_cast<float>(lbl.x2), static_cast<float>(lbl.y2)});
     }
 
     std::vector<Pair> all_pairs;
@@ -121,8 +121,8 @@ TrainingSet build_training_set(bool augment, std::string dataset_path) {
         }
     }
 
-    int n_samples  = (int)(X_rows.size());
-    int n_features = n_samples > 0 ? (int)(X_rows[0].size()) : 0;
+    int n_samples  = static_cast<int>(X_rows.size());
+    int n_features = n_samples > 0 ? static_cast<int>(X_rows[0].size()) : 0;
 
     cv::Mat X(n_samples, n_features, CV_32F);
     for (int i = 0; i < n_samples; ++i) {
@@ -131,7 +131,7 @@ TrainingSet build_training_set(bool augment, std::string dataset_path) {
 
     cv::Mat y(y_vals, true);
 
-    int n_orig = augment ? n_samples / (int)(AUGMENT_ANGLES.size()) : n_samples;
+    int n_orig = augment ? n_samples / static_cast<int>(AUGMENT_ANGLES.size()) : n_samples;
     std::cout << "Training set built: got " << n_samples << " samples with "
               << n_orig << " originaux x " << AUGMENT_ANGLES.size()
               << " rotations" << std::endl;
