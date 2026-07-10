@@ -43,6 +43,19 @@ cv::Mat draw_results(const cv::Mat& image, const cv::Mat& circles,
     return result;
 }
 
+double compute_median(std::vector<double> values) { // copie volontaire (on va trier)
+    if (values.empty()) {
+        return 0.0;
+    }
+    std::sort(values.begin(), values.end());
+
+    size_t n = values.size();
+    if (n % 2 == 1) {
+        return values[n / 2];
+    }
+    return (values[n / 2 - 1] + values[n / 2]) / 2.0;
+}
+
 void compute_metrics(const std::string& dataset_path, bool save) {
     // Load dataset
     std::vector<Sample> dataset = load_dataset(dataset_path);
@@ -139,8 +152,15 @@ void compute_metrics(const std::string& dataset_path, bool save) {
     print_save_confusion_matrix(y, yPred);
 
     std::cout << std::endl << "=== Evaluation - Absolute Error for sum ===" << std::endl;
+
     auto [meanError, errors] = compute_sum_error(y, yPred, dataset_path);
-    std::cout << "Mean Absolute Error : " << meanError << "E" << std::endl;
+
+    double medianError = compute_median(errors);
+    double maxError = errors.empty() ? 0.0 : *std::max_element(errors.begin(), errors.end());
+
+    std::cout << "Mean Absolute Error : " << std::fixed << std::setprecision(4) << meanError << "E" << std::endl;
+    std::cout << "Median error : " << std::fixed << std::setprecision(4) << medianError << "E" << std::endl;
+    std::cout << "Max error : " << std::fixed << std::setprecision(4) << maxError << "E" << std::endl;
     std::cout << "Objectif : < 0.50E -> " << (meanError < 0.50 ? "Succeeded" : "Fail") << std::endl;
 
 }
