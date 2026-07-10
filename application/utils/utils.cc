@@ -84,3 +84,46 @@ MatchingResult iou_matching(const std::vector<Label>& labels, const cv::Mat& cir
 
     return {tp, fp, fn, iou_sum};
 }
+
+cv::Mat draw_matches(
+    cv::Mat image,
+    const std::vector<Label>& labels,
+    const std::vector<cv::Vec3f>& circles)
+{
+    for (const auto& lbl : labels) {
+        cv::rectangle(image,
+            cv::Point(lbl.x1, lbl.y1),
+            cv::Point(lbl.x2, lbl.y2),
+            cv::Scalar(0, 255, 0), 2);
+
+        float value = CLASS_VALUES.at(lbl.class_id);
+
+        std::ostringstream oss;
+        oss << "GT:" << std::fixed << std::setprecision(2) << value << "E";
+
+        cv::putText(image, oss.str(),
+            cv::Point(lbl.x1, lbl.y1 - 6),
+            cv::FONT_HERSHEY_SIMPLEX, 0.5,
+            cv::Scalar(0, 255, 0), 2);
+    }
+
+    std::vector<Match> matches = match_circles_to_labels(labels, circles);
+    for (const auto& m : matches) {
+        int cx = (int)(m.cx);
+        int cy = (int)(m.cy);
+        int r  = (int)(m.r);
+
+        float value = CLASS_VALUES.at(m.class_id);
+
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(2) << value << "E";
+
+        cv::circle(image, cv::Point(cx, cy), r, cv::Scalar(255, 0, 0), 2);
+        cv::putText(image, oss.str(),
+            cv::Point(cx - r, cy + r + 18),
+            cv::FONT_HERSHEY_SIMPLEX, 0.5,
+            cv::Scalar(255, 0, 0), 2);
+    }
+
+    return image;
+}

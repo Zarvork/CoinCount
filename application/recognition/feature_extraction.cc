@@ -43,7 +43,7 @@ std::vector<float> extract_size_feature(double r, int imageH, int imageW) {
     return { (float)(2.0 * r) };
 }
 
-cv::Mat extract_color_features(const cv::Mat& crop, const cv::Mat& mask) {
+std::vector<float> extract_color_features(const cv::Mat& crop, const cv::Mat& mask) {
     cv::Mat effective_mask  = mask;
     if (mask.empty()) {
         effective_mask  = extract_coin_mask(crop.rows);
@@ -118,11 +118,9 @@ cv::Mat extract_color_features(const cv::Mat& crop, const cv::Mat& mask) {
         hists.insert(hists.end(), hist.begin(), hist.end());
     }
 
-    cv::Mat result(1, (int)(mean_std.size() + hists.size()), CV_32F);
-    float* ptr = result.ptr<float>();
-    std::copy(mean_std.begin(), mean_std.end(), ptr);
-    std::copy(hists.begin(), hists.end(), ptr + mean_std.size());
-
+    std::vector<float> result;
+    result.insert(result.end(), mean_std.begin(), mean_std.end());
+    result.insert(result.end(), hists.begin(),    hists.end());
     return result;
 }
 
@@ -381,18 +379,15 @@ std::vector<float> extract_features(const cv::Mat& image, double cx, double cy, 
     cv::Mat mask = extract_coin_mask(crop.rows);
 
     auto sizeFeat  = extract_size_feature(r, h, w);
-    cv::Mat colorFeat = extract_color_features(crop, mask);
+    auto colorFeat = extract_color_features(crop, mask);
     auto lbpFeat   = extract_lbp_features(crop, mask);
     auto hogFeat   = extract_hog_features(crop);
 
     std::vector<float> feat;
-    feat.reserve(sizeFeat.size() + colorFeat.total() + lbpFeat.size() + hogFeat.size());
+    feat.reserve(sizeFeat.size() + colorFeat.size() + lbpFeat.size() + hogFeat.size());
 
     feat.insert(feat.end(), sizeFeat.begin(), sizeFeat.end());
-
-    const float* colorPtr = colorFeat.ptr<float>();
-    feat.insert(feat.end(), colorPtr, colorPtr + colorFeat.total());
-
+    feat.insert(feat.end(), colorFeat.begin(), colorFeat.end());
     feat.insert(feat.end(), lbpFeat.begin(), lbpFeat.end());
     feat.insert(feat.end(), hogFeat.begin(), hogFeat.end());
 

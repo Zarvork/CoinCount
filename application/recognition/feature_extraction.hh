@@ -27,7 +27,7 @@ cv::Mat extract_coin_mask(int size = CROP_SIZE);
 
 std::vector<float> extract_size_feature(double r, int imageH, int imageW);
 
-cv::Mat extract_color_features(const cv::Mat& crop, const cv::Mat& mask = cv::Mat());
+std::vector<float> extract_color_features(const cv::Mat& crop, const cv::Mat& mask = cv::Mat());
 
 cv::Mat compute_uniform_lbp(const cv::Mat& gray, int nPoints, int radius);
 

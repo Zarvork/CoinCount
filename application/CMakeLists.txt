@@ -13,6 +13,8 @@ add_executable(coincount
     dataset/dataset_handler.cc
     recognition/feature_extraction.cc
     recognition/feature_extraction.hh
+    recognition/build_training_set.cc
+    recognition/build_training_set.hh
     utils/utils.cc
     detection/coin_detection.cc
     benchmark/benchmark.cc
