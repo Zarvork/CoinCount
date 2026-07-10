@@ -35,6 +35,7 @@ if(BUILD_TESTING)
         tests/test_dataset_handler.cc
         tests/test_feature_extraction.cc
         tests/test_build_training_set.cc
+        tests/test_coin_recognition.cc
     )
     target_link_libraries(unit_tests PRIVATE
         coincount_lib
