@@ -33,3 +33,8 @@ Dataset: [EURO coins dataset](https://www.kaggle.com/datasets/janstaffa/euro-coi
 ## Known limitations
 
 Hough parameters are tuned to the dataset's resolution, and the classifier is trained on all 150 images (no train/test split), so scores are measured on seen data.
+
+## Authors
+
+- Anis Feore
+- Lucil Finkelstein
