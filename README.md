@@ -2,7 +2,7 @@
 
 Detects euro coins in a photo, recognizes each one and computes the total. Classical computer vision only (no deep learning), built first in Python then ported to C++.
 
-<img width="438" height="380" alt="image" src="https://github.com/user-attachments/assets/d6c37f5a-efa8-4f7a-8549-527bb533a7fe" />
+![CoinCount demo](docs/demo.png)
 
 ## Highlights
 
