@@ -14,6 +14,7 @@ Detects euro coins in a photo, recognizes each one and computes the total. Class
 ## How it works
 
 **Detection:** CLAHE → Gaussian blur → circular Hough transform.
+
 **Recognition:** color (HSV) + texture (LBP) + gradient (HOG) features → SVM.
 
 **Stack:** C++20 · OpenCV · CMake · GoogleTest · Python · scikit-learn
